@@ -1,6 +1,7 @@
 const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
+const axios = require('axios'); // Import axios
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
@@ -27,9 +28,14 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  // Send the books as a JSON response
-    res.status(200).json(books); // Send books as JSON, no need to stringify
+public_users.get('/', async function (req, res) {
+    try {
+        const response = await axios.get('URL_TO_GET_BOOKS');
+        const books = response.data;
+        res.status(200).json(books);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching books", error: error.message });
+    }
 });
 
 // Get book details based on ISBN

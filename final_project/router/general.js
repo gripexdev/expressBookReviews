@@ -51,22 +51,14 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author.toLowerCase(); // Extract author from the request and make it lowercase for case-insensitive matching
-    let booksByAuthor = [];
-
-    // Iterate through the books object and find books by the specified author
-    for (let key in books) {
-        if (books[key].author.toLowerCase() === author) {
-            booksByAuthor.push(books[key]); // If author matches, add the book to the result array
-        }
-    }
-
-    // If books by the author are found, send them; otherwise, return an error message
-    if (booksByAuthor.length > 0) {
-        res.status(200).json(booksByAuthor); // Send the books by the author as a JSON response
-    } else {
-        res.status(404).json({message: "No books found for this author"}); // No books found for the author
+public_users.get('/author/:author', async function (req, res) {
+    const author = req.params.author;
+    try {
+        const response = await axios.get(`URL_TO_GET_BOOKS_BY_AUTHOR/${author}`);
+        const booksByAuthor = response.data;
+        res.status(200).json(booksByAuthor);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching books by author", error: error.message });
     }
 });
 

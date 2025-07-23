@@ -50,8 +50,22 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title.toLowerCase(); // Extract title from the request and make it lowercase for case-insensitive matching
+    let booksByTitle = [];
+
+    // Iterate through the books object and find books by the specified title
+    for (let key in books) {
+        if (books[key].title.toLowerCase() === title) {
+            booksByTitle.push(books[key]); // If title matches, add the book to the result array
+        }
+    }
+
+    // If books by the title are found, send them; otherwise, return an error message
+    if (booksByTitle.length > 0) {
+        res.status(200).json(booksByTitle); // Send the books by the title as a JSON response
+    } else {
+        res.status(404).json({message: "No books found with this title"}); // No books found for the title
+    }
 });
 
 //  Get book review

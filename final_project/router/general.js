@@ -39,16 +39,16 @@ public_users.get('/', async function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-    const isbn = req.params.isbn; // Get ISBN from the request parameters
-
-    // Check if the ISBN exists in the books database
-    if (books[isbn]) {
-        res.status(200).json(books[isbn]); // Send book details as a JSON response
-    } else {
-        res.status(404).json({message: "Book not found"}); // Return an error if book is not found
+public_users.get('/isbn/:isbn', async function (req, res) {
+    const isbn = req.params.isbn;
+    try {
+        const response = await axios.get(`URL_TO_GET_BOOK_BY_ISBN/${isbn}`); // Replace with the actual URL or API endpoint
+        const book = response.data;
+        res.status(200).json(book);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching book details", error: error.message });
     }
- });
+});
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
